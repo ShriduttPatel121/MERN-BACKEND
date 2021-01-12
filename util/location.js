@@ -2,9 +2,13 @@ const axios = require('axios');
 
 const HttpError = require('../models/http-error');
 
-const API_KEY = 'AIzaSyAZXyZk_Rja3O0SvZcQRH_LraPUU91QvnA';
+const API_KEY = 'AIzaSyA4WFhxWQoWj_oGM6CCsBcT8sdPfLx28jE';
 
 async function getCoordsForAddress(address) {
+  // return {
+  //   lat: 40.7484474,
+  //   lng: -73.9871516
+  // };
   const response = await axios.get(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
       address
@@ -20,7 +24,7 @@ async function getCoordsForAddress(address) {
     );
     throw error;
   }
-
+  
   const coordinates = data.results[0].geometry.location;
 
   return coordinates;
