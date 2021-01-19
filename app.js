@@ -26,3 +26,5 @@ app.use((error, req, res, next) => {
 });
 
 app.listen(5000);
+//RYBxFXmrhLJxNDYG
+//mongodb+srv://ShriduttPatel:RYBxFXmrhLJxNDYG@node-shop.pgh1l.mongodb.net/<dbname>?retryWrites=true&w=majority
