@@ -47,7 +47,6 @@ const getPlacesByUserId = async (req, res, next) => {
   let places;
   try {
     places = await Place.find({ creator : userId});
-    console.log(places)
   } catch (e) {
     return next(new HttpError('Somthing went wrong, could not find place for this user', 500));
   }
@@ -73,7 +72,7 @@ const createPlace = async (req, res, next) => {
 
   let coordinates;
   try {
-    coordinates = getCoordsForAddress(address);
+    coordinates = await getCoordsForAddress(address);
   } catch (error) {
     return next(error);
   }
