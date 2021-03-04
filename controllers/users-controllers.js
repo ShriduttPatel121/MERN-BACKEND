@@ -39,7 +39,7 @@ const signup = async (req, res, next) => {
     email,
     password,
     places : [],
-    image : 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.freeiconspng.com%2Fimages%2Fperson-icon&psig=AOvVaw0aQBqUfKzQWm8zGzLC7ED6&ust=1611422645294000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCNi_hqWHsO4CFQAAAAAdAAAAABAD',
+    image : 'blue_person.jpeg',
   })
 
   try {
