@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path')
 
 const placesRoutes = require('./routes/places-routes');
 const usersRoutes = require('./routes/users-routes');
@@ -16,7 +18,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH, DELETE')
   next();
 })
-
+app.use('/uploads/images', express.static(path.join('uploads', 'images'))); 
 app.use('/api/places', placesRoutes);
 app.use('/api/users', usersRoutes);
 
@@ -26,6 +28,11 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
+  if (req.file) {
+    fs.unlink(req.file.path, (error) => {
+      console.log(error);
+    });
+  }
   if (res.headerSent) {
     return next(error);
   }

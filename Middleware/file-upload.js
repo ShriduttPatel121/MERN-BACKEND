@@ -19,7 +19,7 @@ const fileUpload = multer({
     }),
     fileFilter: (req, file, cb) => {
         const isValid = !!MIME_TYPE_MAP[file.mimetype];
-        let error = !isValid ? null : new Error('invalid MIME type!')
+        let error = isValid ? null : new Error('invalid MIME type!')
         cb(error, isValid);
     }
 });
