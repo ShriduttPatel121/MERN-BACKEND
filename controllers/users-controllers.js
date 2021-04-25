@@ -1,5 +1,7 @@
 const uuid = require('uuid/v4');
 const { validationResult } = require('express-validator');
+const bcrypt  = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
@@ -34,10 +36,20 @@ const signup = async (req, res, next) => {
     return next(new HttpError('Invalid inputs passed, please check your data.', 422));
   }
 
+  let hashedPassword;
+
+  try {
+    hashedPassword = await bcrypt.hash(password, 12);
+  } catch (e) {
+    return next( new HttpError('Somthing went wrong while checikng the existing user', 500));
+  }
+
+  
+
   const createdUser = new User({
     name,
     email,
-    password,
+    password: hashedPassword,
     places : [],
     /* image : 'blue_person.jpeg', */
     image : req.file.path,
@@ -62,15 +74,43 @@ const login = async (req, res, next) => {
   let existingUser;
   try {
     existingUser = await User.findOne({email : email})
+    if (!existingUser) {
+      throw new Error();
+    }
   } catch (e) {
-    return next( new HttpError('Somthing went wrong while checikng the existing user', 500));
+    return next( new HttpError('Somthing went wrong, please check your credentials', 401));
   }
 
-  if(!existingUser || existingUser.password !== password) {
+  let isValid
+  try {
+    isValid = await bcrypt.compare(password, existingUser.password);
+  } catch(e) {
+    return next( new HttpError('Somthing went wrong, please check your credentials', 500));
+  }
+
+  if(!existingUser || !isValid) {
     return next(new HttpError('Invalid Credentials, please try again', 401));
   }
 
-  res.json({message: 'Logged in!', user : existingUser.toObject({getters : true})});
+  let token;
+  try {
+    token = jwt.sign({
+      userId: existingUser.id,
+      email: existingUser.email,
+    }, 
+    'SECERET_OF_THE_API_TOKEN',
+    { expiresIn: '1h'}
+    );
+  } catch(e) {
+    return next( new HttpError('Somthing went wrong while checikng the existing user', 500));
+  }
+  
+  res.json({
+    message: 'Logged in!',
+    userId: existingUser.id,
+    email: existingUser.email,
+    token: 'Bearer ' + token
+  });
 };
 
 exports.getUsers = getUsers;
