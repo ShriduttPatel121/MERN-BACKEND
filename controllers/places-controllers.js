@@ -69,7 +69,7 @@ const createPlace = async (req, res, next) => {
     );
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
   try {
@@ -85,11 +85,11 @@ const createPlace = async (req, res, next) => {
     location: coordinates,
     //image : 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fa%2Fab%2F3Falls_Niagara.jpg%2F1200px-3Falls_Niagara.jpg&imgrefurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FNiagara_Falls&tbnid=CzLio1Pz9X5OHM&vet=12ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ..i&docid=u7kki-lWvlzJOM&w=1200&h=798&q=Niagara%20falls&ved=2ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ',
     image: req.file.path,
-    creator
+    creator: req.userData.userId
   });
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (e) {
     return next(new HttpError('Place creation failed, please try again', 500))
   }
