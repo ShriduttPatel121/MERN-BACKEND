@@ -1,6 +1,7 @@
 const uuid = require('uuid/v4');
 const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
+const fs = require('fs')
 
 const HttpError = require('../models/http-error');
 const getCoordsForAddress = require('../util/location');
@@ -82,7 +83,8 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image : 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fa%2Fab%2F3Falls_Niagara.jpg%2F1200px-3Falls_Niagara.jpg&imgrefurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FNiagara_Falls&tbnid=CzLio1Pz9X5OHM&vet=12ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ..i&docid=u7kki-lWvlzJOM&w=1200&h=798&q=Niagara%20falls&ved=2ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ',
+    //image : 'https://www.google.com/imgres?imgurl=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2Fa%2Fab%2F3Falls_Niagara.jpg%2F1200px-3Falls_Niagara.jpg&imgrefurl=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FNiagara_Falls&tbnid=CzLio1Pz9X5OHM&vet=12ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ..i&docid=u7kki-lWvlzJOM&w=1200&h=798&q=Niagara%20falls&ved=2ahUKEwiElJWtpa_uAhUDFHIKHWEJDPgQMygCegUIARDPAQ',
+    image: req.file.path,
     creator
   });
   let user;
@@ -161,6 +163,8 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError('Could not find place for the given id.', 404));
   }
 
+  const imagePath = place.image;
+
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -172,7 +176,9 @@ const deletePlace = async (req, res, next) => {
     console.log(e);
     return next(new HttpError('Somthing went wrong', 500));
   }
-
+  fs.unlink(imagePath, error => {
+    console.log(error);
+  })
   res.status(200).json({ message: 'Deleted place.'});
 };
 
