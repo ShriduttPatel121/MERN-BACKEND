@@ -98,7 +98,7 @@ const login = async (req, res, next) => {
       userId: existingUser.id,
       email: existingUser.email,
     }, 
-    'SECERET_OF_THE_API_TOKEN',
+    process.env.JWT_KEY,
     { expiresIn: '1h'}
     );
   } catch(e) {

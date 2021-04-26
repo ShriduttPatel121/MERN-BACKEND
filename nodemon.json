@@ -1,0 +1,9 @@
+{
+    "env": {
+        "DB_USER": "ShriduttPatel",
+        "DB_PASSWORD": "RYBxFXmrhLJxNDYG",
+        "DB_NAME": "Places",
+        "GOOGLE_API_KEY": "AIzaSyA4WFhxWQoWj_oGM6CCsBcT8sdPfLx28jE",
+        "JWT_KEY": "SECERET_OF_THE_API_TOKEN"
+    }
+}
